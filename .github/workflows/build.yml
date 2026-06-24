@@ -3,12 +3,13 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: ps2dev/ps2sdk:latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build with PS2Dev
-        uses: docker://ps2dev/ps2sdk:latest
-        with:
-          args: make
+      - name: Compile Directly
+        run: |
+          # أمر الترجمة المباشر (يترجم ملف main.c إلى GAME.ELF)
+          ee-gcc -O2 -I$PS2SDK/include -L$PS2SDK/lib -o GAME.ELF main.c -lgs -lc -lkernel
       - uses: actions/upload-artifact@v4
         with:
           name: game
