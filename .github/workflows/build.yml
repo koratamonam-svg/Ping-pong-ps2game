@@ -3,11 +3,14 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: ps2dev/ps2sdk:latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build
-        run: |
-          # نستخدم المسار الكامل للمترجم والمكتبات
-          make
+      - name: Build with PS2Dev
+        uses: docker://ps2dev/ps2sdk:latest
+        with:
+          args: make
+      - uses: actions/upload-artifact@v4
+        with:
+          name: game
+          path: GAME.ELF
           
