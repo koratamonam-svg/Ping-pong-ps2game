@@ -3,25 +3,14 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: ps2dev/ps2sdk:latest
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install Dependencies
+      - name: Build with PS2Dev
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-mipsel-linux-gnu binutils-mipsel-linux-gnu
-          # تحميل مكتبات البلايستيشن 2
-          git clone https://github.com/ps2dev/ps2sdk.git
-          
-      - name: Build Game
-        run: |
-          export PS2SDK=$(pwd)/ps2sdk
-          # قمنا بإضافة -D_EE لتعريف النظام أننا نستهدف المعالج الأساسي
-          mipsel-linux-gnu-gcc -O2 -D_EE \
-            -I$PS2SDK/ee/include -I$PS2SDK/common/include \
-            -L$PS2SDK/ee/lib \
-            -o GAME.ELF main.c -lkernel -lc
-            
+          # المترجم الرسمي ee-gcc موجود بالفعل في هذه الحاوية
+          ee-gcc -O2 -D_EE -D_PS2 -I/usr/local/ps2dev/ps2sdk/ee/include -I/usr/local/ps2dev/ps2sdk/common/include -L/usr/local/ps2dev/ps2sdk/ee/lib -o GAME.ELF main.c -lkernel -lc
           
       - uses: actions/upload-artifact@v4
         with:
