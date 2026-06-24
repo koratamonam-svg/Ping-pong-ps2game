@@ -6,19 +6,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install PS2 Toolchain
+      - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc-mipsel-linux-gnu binutils-mipsel-linux-gnu
+          # تحميل مكتبات البلايستيشن 2
           git clone https://github.com/ps2dev/ps2sdk.git
           
       - name: Build Game
         run: |
-          # نحدد مسار المكتبات الذي قمنا بتحميله
+          # تحديد مسارات المكتبات المحملة
           export PS2SDK=$(pwd)/ps2sdk
-          
-          # نستخدم مترجم الـ MIPS (الخاص بـ PS2) ونعطيه مسار المكتبات
-          mipsel-linux-gnu-gcc -O2 -I$PS2SDK/ee/include -L$PS2SDK/ee/lib -o GAME.ELF main.c -lkernel -lc
+          # الترجمة مع توجيه المترجم لمجلدات الـ include والـ lib
+          mipsel-linux-gnu-gcc -O2 \
+            -I$PS2SDK/ee/include -I$PS2SDK/common/include \
+            -L$PS2SDK/ee/lib \
+            -o GAME.ELF main.c -lkernel -lc
           
       - uses: actions/upload-artifact@v4
         with:
