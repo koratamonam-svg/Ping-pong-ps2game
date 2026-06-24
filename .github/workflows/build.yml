@@ -3,14 +3,19 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: ps2dev/ps2sdk:latest
     steps:
       - uses: actions/checkout@v4
       
-      - name: Compile
+      - name: Install Toolchain
         run: |
-          # نستخدم المترجم الموجود داخل الحاوية مباشرة
-          /usr/local/ps2dev/bin/ee-gcc -O2 -I/usr/local/ps2dev/ps2sdk/ee/include -L/usr/local/ps2dev/ps2sdk/ee/lib -o GAME.ELF main.c -lkernel
+          sudo apt-get update
+          sudo apt-get install -y gcc-mipsel-linux-gnu binutils-mipsel-linux-gnu make
+          
+      - name: Build
+        run: |
+          # نستخدم المترجم العام لـ MIPS
+          mipsel-linux-gnu-gcc -c main.c -o main.o
+          mipsel-linux-gnu-gcc -o GAME.ELF main.o
           
       - uses: actions/upload-artifact@v4
         with:
