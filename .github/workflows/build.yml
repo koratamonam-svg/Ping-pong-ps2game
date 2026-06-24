@@ -13,9 +13,13 @@ jobs:
           
       - name: Build
         run: |
-          # نستخدم المترجم العام لـ MIPS
-          mipsel-linux-gnu-gcc -c main.c -o main.o
-          mipsel-linux-gnu-gcc -o GAME.ELF main.o
+          # سنقوم بتحميل المكتبات الأساسية مباشرة في بيئة البناء
+          git clone https://github.com/ps2dev/ps2sdk.git
+          export PS2SDK=$(pwd)/ps2sdk
+          
+          # الآن نترجم مع إضافة مسار المكتبات (I-) ومسار الأكواد (-L)
+          mipsel-linux-gnu-gcc -O2 -I$PS2SDK/ee/include -L$PS2SDK/ee/lib -o GAME.ELF main.c -lkernel
+          
           
       - uses: actions/upload-artifact@v4
         with:
