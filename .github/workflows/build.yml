@@ -6,20 +6,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Install Toolchain
+      - name: Compile Minimal
         run: |
-          sudo apt-get update
-          sudo apt-get install -y gcc-mipsel-linux-gnu binutils-mipsel-linux-gnu make
-          
-      - name: Build
-        run: |
-          # سنقوم بتحميل المكتبات الأساسية مباشرة في بيئة البناء
-          git clone https://github.com/ps2dev/ps2sdk.git
-          export PS2SDK=$(pwd)/ps2sdk
-          
-          # الآن نترجم مع إضافة مسار المكتبات (I-) ومسار الأكواد (-L)
-          mipsel-linux-gnu-gcc -O2 -I$PS2SDK/ee/include -L$PS2SDK/ee/lib -o GAME.ELF main.c -lkernel
-          
+          # نستخدم المترجم المدمج مباشرة
+          gcc -o GAME.ELF main.c
           
       - uses: actions/upload-artifact@v4
         with:
