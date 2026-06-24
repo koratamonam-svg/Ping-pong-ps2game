@@ -1,0 +1,16 @@
+name: Build PS2 Game
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ps2dev/ps2sdk:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        run: |
+          make
+      - uses: actions/upload-artifact@v2
+        with:
+          name: game
+          path: GAME.ELF
+          
