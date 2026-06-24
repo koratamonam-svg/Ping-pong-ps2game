@@ -9,8 +9,12 @@ jobs:
       
       - name: Build with PS2Dev
         run: |
-          # المترجم الرسمي ee-gcc موجود بالفعل في هذه الحاوية
-          ee-gcc -O2 -D_EE -D_PS2 -I/usr/local/ps2dev/ps2sdk/ee/include -I/usr/local/ps2dev/ps2sdk/common/include -L/usr/local/ps2dev/ps2sdk/ee/lib -o GAME.ELF main.c -lkernel -lc
+          # استخدام المسار الكامل للمترجم لتفادي خطأ 127
+          /usr/local/ps2dev/bin/ee-gcc -O2 -D_EE -D_PS2 \
+            -I/usr/local/ps2dev/ps2sdk/ee/include \
+            -I/usr/local/ps2dev/ps2sdk/common/include \
+            -L/usr/local/ps2dev/ps2sdk/ee/lib \
+            -o GAME.ELF main.c -lkernel -lc
           
       - uses: actions/upload-artifact@v4
         with:
